@@ -32,7 +32,6 @@ public class VacancyController {
 
     @PostMapping("/create")
     public String create(@ModelAttribute Vacancy vacancy) {
-        vacancy.setCreationDate(LocalDateTime.now());
         vacancyRepository.save(vacancy);
         return "redirect:/vacancies";
     }

@@ -2,7 +2,6 @@ package dreamjob.repository;
 
 import dreamjob.model.Vacancy;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,12 +16,12 @@ public class MemoryVacancyRepository implements VacancyRepository {
     private final Map<Integer, Vacancy> vacancies = new HashMap<>();
 
     private MemoryVacancyRepository() {
-        save(new Vacancy(0, "Intern Java Developer", "Intern Java Developer", LocalDateTime.now()));
-        save(new Vacancy(0, "Junior Java Developer", "Junior Java Developer", LocalDateTime.now()));
-        save(new Vacancy(0, "Junior+ Java Developer", "Junior+ Java Developer", LocalDateTime.now()));
-        save(new Vacancy(0, "Middle Java Developer", "Middle Java Developer", LocalDateTime.now()));
-        save(new Vacancy(0, "Middle+ Java Developer", "Middle+ Java Developer", LocalDateTime.now()));
-        save(new Vacancy(0, "Senior Java Developer", "Senior Java Developer", LocalDateTime.now()));
+        save(new Vacancy(0, "Intern Java Developer", "Intern Java Developer"));
+        save(new Vacancy(0, "Junior Java Developer", "Junior Java Developer"));
+        save(new Vacancy(0, "Junior+ Java Developer", "Junior+ Java Developer"));
+        save(new Vacancy(0, "Middle Java Developer", "Middle Java Developer"));
+        save(new Vacancy(0, "Middle+ Java Developer", "Middle+ Java Developer"));
+        save(new Vacancy(0, "Senior Java Developer", "Senior Java Developer"));
     }
 
     public static MemoryVacancyRepository getInstance() {
@@ -47,8 +46,7 @@ public class MemoryVacancyRepository implements VacancyRepository {
                 (id, oldVacancy) ->
                         new Vacancy(oldVacancy.getId(),
                                 vacancy.getTitle(),
-                                vacancy.getDescription(),
-                                oldVacancy.getCreationDate())) != null;
+                                vacancy.getDescription())) != null;
     }
 
     @Override
