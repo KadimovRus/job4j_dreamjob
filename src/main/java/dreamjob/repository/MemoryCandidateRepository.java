@@ -14,17 +14,17 @@ public class MemoryCandidateRepository implements CandidateRepository {
     private static final MemoryCandidateRepository INSTANCE = new MemoryCandidateRepository();
 
     private int nextId = 1;
-    private Map<Integer, Candidate> candidates = new HashMap<>();
+    private final Map<Integer, Candidate> candidates = new HashMap<>();
 
     public static MemoryCandidateRepository getInstance() {
         return INSTANCE;
     }
 
     public MemoryCandidateRepository() {
-        save(new Candidate(0, "Иванов Иван Иванович", "Java Junior Developer", LocalDateTime.now()));
-        save(new Candidate(0, "Петров Петр Петрович", "Java Junior+ Developer", LocalDateTime.now()));
-        save(new Candidate(0, "Сидоров Сидр Сидорович", "Java Middle Developer", LocalDateTime.now()));
-        save(new Candidate(0, "Васин Василий Васильевич", "Java Senior Developer", LocalDateTime.now()));
+        save(new Candidate(0, "Иванов Иван Иванович", "Java Junior Developer"));
+        save(new Candidate(0, "Петров Петр Петрович", "Java Junior+ Developer"));
+        save(new Candidate(0, "Сидоров Сидр Сидорович", "Java Middle Developer"));
+        save(new Candidate(0, "Васин Василий Васильевич", "Java Senior Developer"));
     }
 
     @Override
@@ -35,8 +35,8 @@ public class MemoryCandidateRepository implements CandidateRepository {
     }
 
     @Override
-    public void deleteById(int id) {
-        candidates.remove(id);
+    public boolean deleteById(int id) {
+        return candidates.remove(id) != null;
     }
 
     @Override
@@ -45,8 +45,7 @@ public class MemoryCandidateRepository implements CandidateRepository {
                 (id, oldCandidate) ->
                    new Candidate(oldCandidate.getId(),
                            candidate.getName(),
-                           candidate.getDescription(),
-                           candidate.getCreationDate())) != null;
+                           candidate.getDescription())) != null;
     }
 
     @Override
