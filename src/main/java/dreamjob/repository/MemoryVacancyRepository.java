@@ -46,7 +46,8 @@ public class MemoryVacancyRepository implements VacancyRepository {
                 (id, oldVacancy) ->
                         new Vacancy(oldVacancy.getId(),
                                 vacancy.getTitle(),
-                                vacancy.getDescription())) != null;
+                                vacancy.getDescription(),
+                                oldVacancy.getCreationDate())) != null;
     }
 
     @Override
