@@ -2,6 +2,7 @@ package dreamjob.controller;
 
 import dreamjob.model.Candidate;
 import dreamjob.repository.MemoryCandidateRepository;
+import dreamjob.service.SimpleCandidateService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/candidates")
 public class CandidateController {
 
-    private final MemoryCandidateRepository candidateRepository = MemoryCandidateRepository.getInstance();
+    private final SimpleCandidateService simpleCandidateService = SimpleCandidateService.getInstance();
 
     @GetMapping
     public String getAll(Model model) {
-        model.addAttribute("candidates", candidateRepository.findAll());
+        model.addAttribute("candidates", simpleCandidateService.findAll());
         return "candidates/list";
     }
 
@@ -29,13 +30,13 @@ public class CandidateController {
 
     @PostMapping("/create")
     public String create(@ModelAttribute Candidate candidate) {
-        candidateRepository.save(candidate);
+        simpleCandidateService.save(candidate);
         return "redirect:/candidates";
     }
 
     @GetMapping("/{id}")
     public String getById(Model model, @PathVariable int id) {
-        var candidateOptional = candidateRepository.findById(id);
+        var candidateOptional = simpleCandidateService.findById(id);
         if (candidateOptional.isEmpty()) {
             model.addAttribute("message", "Кандидат с указанным идентификатором не найден");
             return "errors/404";
@@ -46,7 +47,7 @@ public class CandidateController {
 
     @PostMapping("/update")
     public String update(@ModelAttribute Candidate candidate, Model model) {
-        var isUpdated = candidateRepository.update(candidate);
+        var isUpdated = simpleCandidateService.update(candidate);
         if (!isUpdated) {
             model.addAttribute("message", "Анкета кандидата с указанным идентификатором не найдена");
             return "errors/404";
@@ -56,7 +57,7 @@ public class CandidateController {
 
     @GetMapping("/delete/{id}")
     public String delete(Model model, @PathVariable int id) {
-        var isDeleted = candidateRepository.deleteById(id);
+        var isDeleted = simpleCandidateService.deleteById(id);
         if (!isDeleted) {
             model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
             return "errors/404";
