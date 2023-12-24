@@ -1,24 +1,18 @@
 package dreamjob.repository;
 
 import dreamjob.model.Candidate;
-import dreamjob.model.Vacancy;
+import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
 public class MemoryCandidateRepository implements CandidateRepository {
-
-    private static final MemoryCandidateRepository INSTANCE = new MemoryCandidateRepository();
 
     private int nextId = 1;
     private final Map<Integer, Candidate> candidates = new HashMap<>();
-
-    public static MemoryCandidateRepository getInstance() {
-        return INSTANCE;
-    }
 
     public MemoryCandidateRepository() {
         save(new Candidate(0, "Иванов Иван Иванович", "Java Junior Developer"));
