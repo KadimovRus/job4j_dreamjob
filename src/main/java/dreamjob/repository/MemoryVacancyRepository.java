@@ -5,7 +5,6 @@ import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +47,8 @@ public class MemoryVacancyRepository implements VacancyRepository {
                                 vacancy.getTitle(),
                                 vacancy.getDescription(),
                                 oldVacancy.getCreationDate(),
-                                vacancy.isVisible())) != null;
+                                vacancy.isVisible(),
+                                vacancy.getCityId())) != null;
     }
 
     @Override

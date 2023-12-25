@@ -1,6 +1,7 @@
 package dreamjob.controller;
 
 import dreamjob.model.Candidate;
+import dreamjob.service.CityService;
 import dreamjob.service.SimpleCandidateService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CandidateController {
 
     private final SimpleCandidateService simpleCandidateService;
+    private final CityService cityService;
 
-    public CandidateController(SimpleCandidateService simpleCandidateService) {
+    public CandidateController(SimpleCandidateService simpleCandidateService, CityService cityService) {
         this.simpleCandidateService = simpleCandidateService;
+        this.cityService = cityService;
     }
 
     @GetMapping
@@ -27,7 +30,8 @@ public class CandidateController {
     }
 
     @GetMapping("/create")
-    public String getCreationPage() {
+    public String getCreationPage(Model model) {
+        model.addAttribute("cities", cityService.findAll());
         return "candidates/create";
     }
 
@@ -44,6 +48,7 @@ public class CandidateController {
             model.addAttribute("message", "Кандидат с указанным идентификатором не найден");
             return "errors/404";
         }
+        model.addAttribute("cities", cityService.findAll());
         model.addAttribute("candidate", candidateOptional.get());
         return "candidates/one";
     }
