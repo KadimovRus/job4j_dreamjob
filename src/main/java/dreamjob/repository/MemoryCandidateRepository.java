@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
@@ -15,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MemoryCandidateRepository implements CandidateRepository {
 
     private final AtomicInteger nextId = new AtomicInteger(0);
-    private final Map<Integer, Candidate> candidates = new HashMap<>();
+    private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
 
     public MemoryCandidateRepository() {
         save(new Candidate(0, "Иванов Иван Иванович", "Java Junior Developer"));
