@@ -1,5 +1,6 @@
 package dreamjob.controller;
 
+import dreamjob.dto.FileDto;
 import dreamjob.model.Candidate;
 import dreamjob.service.CityService;
 import dreamjob.service.SimpleCandidateService;
@@ -10,6 +11,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/candidates")
@@ -36,9 +41,15 @@ public class CandidateController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Candidate candidate) {
-        simpleCandidateService.save(candidate);
-        return "redirect:/candidates";
+    public String create(@ModelAttribute Candidate candidate, @RequestParam MultipartFile file, Model model) throws IOException {
+        try {
+            simpleCandidateService.save(candidate, new FileDto(file.getOriginalFilename(), file.getBytes()));
+            return "redirect:/candidates";
+        } catch (Exception exception) {
+            model.addAttribute("message", exception.getMessage());
+            return "errors/404";
+        }
+
     }
 
     @GetMapping("/{id}")
@@ -54,8 +65,8 @@ public class CandidateController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Candidate candidate, Model model) {
-        var isUpdated = simpleCandidateService.update(candidate);
+    public String update(@ModelAttribute Candidate candidate, MultipartFile file, Model model) throws IOException {
+        var isUpdated = simpleCandidateService.update(candidate, new FileDto(file.getOriginalFilename(), file.getBytes()));
         if (!isUpdated) {
             model.addAttribute("message", "Анкета кандидата с указанным идентификатором не найдена");
             return "errors/404";

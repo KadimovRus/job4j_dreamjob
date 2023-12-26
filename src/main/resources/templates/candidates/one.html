@@ -21,6 +21,14 @@
                 <label for="name" class="form-label"><b>Имя</b></label>
                 <input type="text" class="form-control" id="name" name="name" th:field="*{name}" placeholder="ФИО разработчика">
             </div>
+            <div class="col-3">
+                <div class="mb-3">
+                    <img th:src="@{/files/{fileId}(fileId=*{fileId})}" class="w-100" alt="No image">
+                </div>
+                <div class="mb-3">
+                    <input class="form-control form-control-sm w-100" type="file" id="formFile" name="file">
+                </div>
+            </div>
             <div class="mb-3">
                 <label for="description" class="form-label"><b>Описание</b></label>
                 <textarea class="form-control" id="description" name="description" th:field="*{description}" rows="25" placeholder="Данные по кандидату"></textarea>

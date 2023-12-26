@@ -1,5 +1,6 @@
 package dreamjob.service;
 
+import dreamjob.dto.FileDto;
 import dreamjob.model.Candidate;
 import dreamjob.repository.CandidateRepository;
 import org.springframework.stereotype.Service;
@@ -11,14 +12,22 @@ import java.util.Optional;
 public class SimpleCandidateService implements CandidateService {
 
     private final CandidateRepository candidateRepository;
+    private final FileService fileService;
 
-    private SimpleCandidateService(CandidateRepository candidateRepository) {
+    private SimpleCandidateService(CandidateRepository candidateRepository, FileService fileService) {
         this.candidateRepository = candidateRepository;
+        this.fileService = fileService;
     }
 
     @Override
-    public Candidate save(Candidate candidate) {
+    public Candidate save(Candidate candidate, FileDto image) {
+        saveNewFile(candidate, image);
         return candidateRepository.save(candidate);
+    }
+
+    private void saveNewFile(Candidate candidate, FileDto image) {
+        var file = fileService.save(image);
+        candidate.setFileId(file.getId());
     }
 
     @Override
@@ -27,8 +36,16 @@ public class SimpleCandidateService implements CandidateService {
     }
 
     @Override
-    public boolean update(Candidate candidate) {
-        return candidateRepository.update(candidate);
+    public boolean update(Candidate candidate, FileDto image) {
+        var isNewFileEmpty = image.getContent().length == 0;
+        if (isNewFileEmpty) {
+            return candidateRepository.update(candidate);
+        }
+        var oldFieldId = candidate.getFileId();
+        saveNewFile(candidate, image);
+        var isUpdate = candidateRepository.update(candidate);
+        fileService.deleteById(oldFieldId);
+        return isUpdate;
     }
 
     @Override

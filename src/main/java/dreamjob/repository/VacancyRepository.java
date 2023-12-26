@@ -1,5 +1,6 @@
 package dreamjob.repository;
 
+import dreamjob.dto.FileDto;
 import dreamjob.model.Vacancy;
 
 import java.util.Collection;

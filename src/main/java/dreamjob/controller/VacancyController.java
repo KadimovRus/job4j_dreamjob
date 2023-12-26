@@ -1,6 +1,7 @@
 package dreamjob.controller;
 
 
+import dreamjob.dto.FileDto;
 import dreamjob.model.Vacancy;
 import dreamjob.service.CityService;
 import dreamjob.service.VacancyService;
@@ -11,6 +12,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/vacancies")
@@ -36,9 +41,14 @@ public class VacancyController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Vacancy vacancy) {
-        vacancyService.save(vacancy);
-        return "redirect:/vacancies";
+    public String create(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model) throws IOException {
+        try {
+            vacancyService.save(vacancy, new FileDto(file.getOriginalFilename(), file.getBytes()));
+            return "redirect:/vacancies";
+        } catch (Exception exception) {
+            model.addAttribute("message", exception.getMessage());
+            return "errors/404";
+        }
     }
 
     @GetMapping("/{id}")
@@ -54,13 +64,18 @@ public class VacancyController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Vacancy vacancy, Model model) {
-        var isUpdated = vacancyService.update(vacancy);
-        if (!isUpdated) {
-            model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
+    public String update(@ModelAttribute Vacancy vacancy, MultipartFile file, Model model) {
+        try {
+            var isUpdated = vacancyService.update(vacancy, new FileDto(file.getOriginalFilename(), file.getBytes()));
+            if (!isUpdated) {
+                model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
+                return "errors/404";
+            }
+            return "redirect:/vacancies";
+        } catch (Exception exception) {
+            model.addAttribute("message", exception.getMessage());
             return "errors/404";
         }
-        return "redirect:/vacancies";
     }
 
     @GetMapping("/delete/{id}")
