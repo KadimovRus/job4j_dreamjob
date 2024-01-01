@@ -1,6 +1,8 @@
 package dreamjob.repository;
 
 import dreamjob.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Sql2o;
 
@@ -11,6 +13,7 @@ import java.util.Optional;
 public class Sql2oUserRepository implements UserRepository {
 
     private final Sql2o sql2o;
+    private final Logger log = LoggerFactory.getLogger(Sql2oUserRepository.class);
 
     public Sql2oUserRepository(Sql2o sql2o) {
         this.sql2o = sql2o;
@@ -29,7 +32,10 @@ public class Sql2oUserRepository implements UserRepository {
                     .addParameter("password", user.getPassword());
             int generatedKey = query.executeUpdate().getKey(Integer.class);
             user.setId(generatedKey);
-            return Optional.ofNullable(user);
+            return Optional.of(user);
+        } catch (Exception exception) {
+            log.info(exception.getMessage());
+            return Optional.empty();
         }
     }
 

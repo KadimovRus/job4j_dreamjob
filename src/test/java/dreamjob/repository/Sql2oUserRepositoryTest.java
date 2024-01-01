@@ -5,15 +5,14 @@ import dreamjob.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.sql2o.Sql2oException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Sql2oUserRepositoryTest {
 
@@ -67,12 +66,12 @@ public class Sql2oUserRepositoryTest {
     }
 
     @Test
-    public void whenSaveDuplicateEmailThenEmpty() {
-        var user = sql2oUserRepository.save(new User(
-                0, "email", "name", "password")).get();
-        assertThatThrownBy(() -> sql2oUserRepository.save(new User(
-                0, user.getEmail(), "name", "password"
-        ))).isInstanceOf(Sql2oException.class);
+    public void whenSaveUserWithDuplicateEmailThenFail() {
+        User user1 = new User(0, "user1", "user@gmail.com", "password");
+        User user2 = new User(0, "user2", "user@gmail.com", "password");
+        sql2oUserRepository.save(user1);
+        Optional<User> duplicateUser = sql2oUserRepository.save(user2);
+        assertThat(duplicateUser).isEmpty();
     }
 
     @Test
